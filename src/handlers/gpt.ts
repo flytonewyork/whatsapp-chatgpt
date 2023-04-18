@@ -10,6 +10,7 @@ import config from "../config";
 // TTS
 import { ttsRequest as speechTTSRequest } from "../providers/speech";
 import { ttsRequest as awsTTSRequest } from "../providers/aws";
+import { ttsRequest as elTTSRequest } from "../providers/eleven-labs";
 import { TTSMode } from "../types/tts-mode";
 
 // Moderation
@@ -107,6 +108,14 @@ async function sendVoiceMessageReply(message: Message, gptTextResponse: string) 
 			logTAG = "[AWSPolly]";
 			ttsRequest = async function (): Promise<Buffer | null> {
 				return await awsTTSRequest(gptTextResponse);
+			};
+			break;
+
+		case TTSMode.ElevenLabs:
+			logTAG = "[ElevenLabs]";
+			console.log("ElevenLabs");
+			ttsRequest = async function (): Promise<Buffer | null> {
+				return await elTTSRequest(gptTextResponse);
 			};
 			break;
 

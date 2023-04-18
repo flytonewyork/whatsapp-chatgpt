@@ -3,6 +3,8 @@ import config from "../config";
 async function transcribeWhisperApi(audioBlob: Blob): Promise<{ text: string; language: string }> {
 	const url = config.whisperServerUrl;
 
+	console.log("Transcribing audio with Whisper API...", audioBlob);
+
 	// FormData
 	const formData = new FormData();
 	formData.append("file", audioBlob);
@@ -14,19 +16,27 @@ async function transcribeWhisperApi(audioBlob: Blob): Promise<{ text: string; la
 	}
 	formData.append("task", "transcribe");
 
-	const headers = new Headers();
-	headers.append("Authorization", `Bearer ${config.whisperApiKey}`);
-
 	// Request options
 	const options = {
 		method: "POST",
-		body: formData,
-		headers
+		body: formData
 	};
 
-	const response = await fetch(url, options);
-	const transcription = await response.json();
-	return transcription;
+	console.log("Sending request to URL:", url);
+	console.log("Request options:", options);
+
+	try {
+		const response = await fetch(url, options);
+		console.log("Received response from server:", response);
+
+		const transcription = await response.json();
+		console.log("Parsed response data:", transcription);
+
+		return transcription;
+	} catch (error) {
+		console.error("Error transcribing audio with Whisper API:", error);
+		throw error;
+	}
 }
 
 export { transcribeWhisperApi };

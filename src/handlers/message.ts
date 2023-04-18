@@ -26,6 +26,7 @@ import { botReadyTimestamp } from "../index";
 // Handles message
 async function handleIncomingMessage(message: Message) {
 	let messageString = message.body;
+	console.log("Received message:", messageString);
 
 	// Prevent handling old messages
 	if (message.timestamp != null) {
@@ -50,7 +51,6 @@ async function handleIncomingMessage(message: Message) {
 	// Transcribe audio
 	if (message.hasMedia) {
 		const media = await message.downloadMedia();
-
 		// Ignore non-audio media
 		if (!media || !media.mimetype.startsWith("audio/")) return;
 
@@ -102,7 +102,7 @@ async function handleIncomingMessage(message: Message) {
 
 		// Reply with transcription
 		const reply = `You said: ${transcribedText}${transcribedLanguage ? " (language: " + transcribedLanguage + ")" : ""}`;
-		message.reply(reply);
+		// message.reply(reply);
 
 		// Handle message GPT
 		await handleMessageGPT(message, transcribedText);
@@ -132,7 +132,6 @@ async function handleIncomingMessage(message: Message) {
 		await handleMessageGPT(message, prompt);
 		return;
 	}
-
 
 	// GPT (!lang <prompt>)
 	if (startsWithIgnoreCase(messageString, config.langChainPrefix)) {

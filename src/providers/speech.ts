@@ -34,6 +34,7 @@ async function ttsRequest(text: string): Promise<Buffer | null> {
  */
 async function transcribeRequest(audioBlob: Blob): Promise<{ text: string; language: string }> {
 	const url = config.speechServerUrl + "/transcribe";
+	console.log("Transcribing audio with Speech API...", audioBlob);
 
 	// FormData
 	const formData = new FormData();
@@ -42,12 +43,22 @@ async function transcribeRequest(audioBlob: Blob): Promise<{ text: string; langu
 	// Request options
 	const options = {
 		method: "POST",
-		body: formData
+		body: formData,
+		headers: {
+			"Content-Type": "multipart/form-data"
+		}
 	};
-
-	const response = await fetch(url, options);
-	const transcription = await response.json();
-	return transcription;
+	console.log("Sending request to URL:", url);
+	try {
+		const response = await fetch(url, options);
+		console.log("Received response from server:", response);
+		const transcription = await response.json();
+		console.log("Parsed response data:", transcription);
+		return transcription;
+	} catch (error) {
+		console.error("An error occured (Transcribe request)", error);
+		return { text: "Sorry", language: "english" };
+	}
 }
 
 export { ttsRequest, transcribeRequest };
