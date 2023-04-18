@@ -6,7 +6,7 @@ import axios from "axios";
  */
 async function ttsRequest(text: string): Promise<Buffer | null> {
 	const voice_settings = {
-		stability: 0.75,
+		stability: 0.3,
 		similarity_boost: 0.75
 	};
 	// Make sure to remove any non-text like javascript
@@ -14,7 +14,6 @@ async function ttsRequest(text: string): Promise<Buffer | null> {
 	plainText = plainText.replace(/`([^`]+)`/g, "$1"); // remove any inline code blocks
 	let words = plainText.split(" ");
 	let trunc = words.slice(0, 100).join(" ");
-	console.log("trunc", trunc);
 
 	const url = "https://api.elevenlabs.io/v1/text-to-speech/9VeabD8xbk78nPaN5KOY";
 	const body = JSON.stringify({
