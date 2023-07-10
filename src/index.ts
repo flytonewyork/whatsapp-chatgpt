@@ -1,4 +1,4 @@
-import qrcode from "qrcode-terminal";
+import * as QRCode from "qrcode";
 import { Client, Message, Events, LocalAuth } from "whatsapp-web.js";
 
 // Constants
@@ -28,8 +28,12 @@ const start = async () => {
 
 	// WhatsApp auth
 	client.on(Events.QR_RECEIVED, (qr: string) => {
-		qrcode.generate(qr, { small: true }, (qrcode: string) => {
-			cli.printQRCode(qrcode);
+		QRCode.toString(qr, { type: "terminal" }, (err: any, url: string) => {
+			if (err) {
+				console.error("Error generating QR Code: ", err);
+			} else {
+				cli.printQRCode(url);
+			}
 		});
 	});
 
